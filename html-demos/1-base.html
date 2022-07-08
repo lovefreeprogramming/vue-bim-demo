@@ -10,9 +10,7 @@
 </body>
 
 <script type="module">
-    import * as Vue from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
-
-    const {createApp,ref} = Vue;
+    import { createApp, ref } from './vue.esm-browser.js'
 
     const App = {
         template: `
@@ -20,9 +18,9 @@
               <div>count:{{ count }}</div>
               <button @click="add">点击</button>
           </div>`,
-        setup(){
+        setup() {
             const count=ref(0);
-            const add=()=>{
+            const add = ()=>{
                 count.value=count.value+1
             }
             return{
