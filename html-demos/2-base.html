@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+<div id="app"></div>
+</body>
+
+<script type="module">
+    import { createApp, ref } from './vue.esm-browser.js'
+
+    const App = {
+        template: `
+          <div>
+              <div>count:{{ count }}</div>
+              <button @click="add">点击</button>
+          </div>`,
+        setup() {
+            const count=ref(0);
+            const add = ()=>{
+                count.value=count.value+1
+            }
+            return{
+                count,
+                add
+            }
+        }
+    }
+
+    createApp(App).mount('#app');
+
+</script>
+</html>
