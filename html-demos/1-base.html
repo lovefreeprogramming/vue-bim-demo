@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="./element-plus.css" />
+    <link rel="stylesheet" href="./utils/element-plus.css" />
 </head>
 
 <body>
@@ -12,14 +12,14 @@
 <script type="importmap">
 {
   "imports": {
-    "vue": "./vue.esm-browser.js",
-    "element-plus": "./element-plus.mjs"
+    "vue": "./utils/vue.esm-browser.js",
+    "element-plus": "./utils/element-plus.mjs"
   }
 }
 </script>
 <script type="module">
     import { createApp, ref } from 'vue'
-    import ElementPlus  from 'element-plus'
+    import ElementPlus from 'element-plus'
 
     const App = {
         template: `

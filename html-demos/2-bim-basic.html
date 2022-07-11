@@ -2,40 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>XXX</title>
+
+    <!-- Import BIMface-->
+    <script src="./utils/BimfaceSDKLoader.js" charset="utf-8"></script>
+
+    <!-- Import style -->
+    <link rel="stylesheet" href="./utils/ele.css" />
+    <!-- Import component library -->
+    <script src="./utils/ele.js"></script>
 </head>
 
 <body>
-<div id="app"></div>
-
+    <div id="app"></div>
 </body>
 
-<script src="https://static.bimface.com/api/BimfaceSDKLoader/BimfaceSDKLoader@latest-release.js" charset="utf-8"></script>
+
 <script type="module">
-    import { createApp, ref, onMounted } from './vue.esm-browser.js'
+    import { createApp, ref, onMounted } from './utils/vue.esm-browser.js'
 
     const App = {
         template: `
           <div>
-              <div>count:{{ count }}</div>
-              <button @click="add">点击</button>
-              <div id="domId" style="width:800px; height:600px"></div>
+            <div>count:{{ count }}</div>
+            <button @click="add">点击</button>
+            <div id="domId" style="width:800px; height:600px"></div>
           </div>`,
         setup() {
             const count=ref(0);
-            const add = ()=>{
+            const add = () => {
                 count.value=count.value+1
             }
 
-            onMounted(() => {
-                let viewer3D;
-                let app;
-                let viewToken = 'c943c4b5604d4eb3a83d2159e8cbe9b9';
-                let loaderConfig = new BimfaceSDKLoaderConfig();
-                loaderConfig.viewToken = viewToken;
-                BimfaceSDKLoader.load(loaderConfig, successCallback, failureCallback);
+            let viewer3D;
+            let app;
+            let viewToken = 'c943c4b5604d4eb3a83d2159e8cbe9b9';
+            let loaderConfig = new BimfaceSDKLoaderConfig();
+            loaderConfig.viewToken = viewToken;
 
-                function successCallback(viewMetaData) {
+            onMounted(() => {
+                mBimfaceSDKLoader.load(loaderConfig, successCallback, failureCallback);
+            })
+            
+            function successCallback(viewMetaData) {
                     let domShow = document.getElementById('domId');
                     let webAppConfig = new Glodon.Bimface.Application.WebApplication3DConfig();
                     webAppConfig.domElement = domShow;
@@ -44,12 +53,9 @@
                     viewer3D = app.getViewer();
                 }
 
-                function failureCallback(error) {
-                    console.log(error);
-                }
-            })
-
-
+            function failureCallback(error) {
+                console.log(error);
+            }
 
             return{
                 count,
@@ -59,11 +65,6 @@
     }
 
     createApp(App).mount('#app');
-
-</script>
-
-<script type="module">
-
 
 </script>
 
