@@ -3,20 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="./element-plus.css" />
 </head>
 
 <body>
 <div id="app"></div>
 </body>
-
+<script type="importmap">
+{
+  "imports": {
+    "vue": "./vue.esm-browser.js",
+    "element-plus": "./element-plus.mjs"
+  }
+}
+</script>
 <script type="module">
-    import { createApp, ref } from './vue.esm-browser.js'
+    import { createApp, ref } from 'vue'
+    import ElementPlus  from 'element-plus'
 
     const App = {
         template: `
           <div>
               <div>count:{{ count }}</div>
-              <button @click="add">点击</button>
+              <el-button @click="add">点击</el-button>
           </div>`,
         setup() {
             const count=ref(0);
@@ -29,8 +38,9 @@
             }
         }
     }
-
-    createApp(App).mount('#app');
+    const app=createApp(App);
+    app.use(ElementPlus)
+    app.mount('#app');
 
 </script>
 </html>
