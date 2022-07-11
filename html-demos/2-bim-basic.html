@@ -7,6 +7,7 @@
 
 <body>
 <div id="app"></div>
+
 </body>
 
 <script src="https://static.bimface.com/api/BimfaceSDKLoader/BimfaceSDKLoader@latest-release.js" charset="utf-8"></script>
@@ -25,35 +26,30 @@
             const add = ()=>{
                 count.value=count.value+1
             }
-            
+
             onMounted(() => {
-                // Code for BIM
-                let viewer3D
-                let bimapp
-                let viewToken = '70ae92494b8c48f9ad4ef98890a99bc5'
-                let loaderConfig = new BimfaceSDKLoaderConfig()
-                loaderConfig.viewtoken = viewToken
-                BimfaceSDKLoader.load(loaderConfig, successCallback, failureCallback)
+                let viewer3D;
+                let app;
+                let viewToken = 'c943c4b5604d4eb3a83d2159e8cbe9b9';
+                let loaderConfig = new BimfaceSDKLoaderConfig();
+                loaderConfig.viewToken = viewToken;
+                BimfaceSDKLoader.load(loaderConfig, successCallback, failureCallback);
+
+                function successCallback(viewMetaData) {
+                    let domShow = document.getElementById('domId');
+                    let webAppConfig = new Glodon.Bimface.Application.WebApplication3DConfig();
+                    webAppConfig.domElement = domShow;
+                    app = new Glodon.Bimface.Application.WebApplication3D(webAppConfig);
+                    app.addView(viewToken);
+                    viewer3D = app.getViewer();
+                }
+
+                function failureCallback(error) {
+                    console.log(error);
+                }
             })
 
-            // callback function when success
-            function successCallback(viewMetaData) {
-                // get DOM
-                let domshow = document.getElementById('domId')
-                // make 
-                let webAppConfig = new Glodon.Bimface.Application.WebApplication3DConfig()
-                webAppConfig.domElement = domshow
-                bimapp = new Glodon.Bimface.Application.WebApplication3D(webAppConfig)
-                bimapp.addView(viewToken)
-                viewer3D = app.getViwer()
 
-                alert("Beauty happens");
-            }
-
-            function failureCallback(error) {
-                console.log(error);
-                alert("Shit happens");
-            }
 
             return{
                 count,
@@ -65,4 +61,10 @@
     createApp(App).mount('#app');
 
 </script>
+
+<script type="module">
+
+
+</script>
+
 </html>
