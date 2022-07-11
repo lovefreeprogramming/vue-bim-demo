@@ -3,30 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>XXX</title>
-
-    <!-- Import BIMface-->
-    <script src="./utils/BimfaceSDKLoader.js" charset="utf-8"></script>
-
-    <!-- Import style -->
-    <link rel="stylesheet" href="./utils/ele.css" />
-    <!-- Import component library -->
-    <script src="./utils/ele.js"></script>
+    <link rel="stylesheet" href="./utils/element-plus.css" />
 </head>
 
 <body>
     <div id="app"></div>
 </body>
-
+<script type="importmap">
+{
+  "imports": {
+    "vue": "./utils/vue.esm-browser.js",
+    "element-plus": "./utils/element-plus.mjs"
+  }
+}
+</script>
+<script src="./utils/BimfaceSDKLoader.js" charset="utf-8"></script>
 
 <script type="module">
-    import { createApp, ref, onMounted } from './utils/vue.esm-browser.js'
+    import { createApp, ref, onMounted } from 'vue'
+    import ElementPlus from 'element-plus'
 
     const App = {
         template: `
           <div>
-            <div>count:{{ count }}</div>
-            <button @click="add">点击</button>
-            <div id="domId" style="width:800px; height:600px"></div>
+          <div>count:{{ count }}</div>
+          <button @click="add">点击</button>
+          <div id="domId" style="width:800px; height:600px"></div>
+          <el-button @click="isolateComponents">
+            <template v-if="isIsolationActivated">
+              取消隔离
+            </template>
+            <template v-else>
+              构件隔离
+            </template>
+          </el-button>
           </div>`,
         setup() {
             const count=ref(0);
@@ -41,9 +51,9 @@
             loaderConfig.viewToken = viewToken;
 
             onMounted(() => {
-                mBimfaceSDKLoader.load(loaderConfig, successCallback, failureCallback);
+                BimfaceSDKLoader.load(loaderConfig, successCallback, failureCallback);
             })
-            
+
             function successCallback(viewMetaData) {
                     let domShow = document.getElementById('domId');
                     let webAppConfig = new Glodon.Bimface.Application.WebApplication3DConfig();
@@ -56,15 +66,37 @@
             function failureCallback(error) {
                 console.log(error);
             }
+            const isIsolationActivated = ref(false);
+            function isolateComponents() {
+                if (!isIsolationActivated.value) {
+                    // 设置隔离选项，指定其他构件为半透明状态
+                    let makeOthersTranslucent = Glodon.Bimface.Viewer.IsolateOption.MakeOthersTranslucent;
+                    // 调用viewer3D.method，隔离楼层为"F2"的构件
+                    viewer3D.getModel().isolateComponentsByObjectData([{"levelName":"F2"}], makeOthersTranslucent);
+                    // 渲染三维模型
+                    viewer3D.render();
+                } else {
+                    // 清除隔离
+                    viewer3D.getModel().clearIsolation();
+                    // 渲染三维模型
+                    viewer3D.render();
+                }
+                isIsolationActivated.value = !isIsolationActivated.value;
+            }
+
 
             return{
                 count,
-                add
+                add,
+                isIsolationActivated,
+                isolateComponents,
             }
         }
     }
 
-    createApp(App).mount('#app');
+    const app=createApp(App);
+    app.use(ElementPlus)
+    app.mount('#app');
 
 </script>
 
