@@ -9,20 +9,52 @@
 <div id="app"></div>
 </body>
 
+<script src="https://static.bimface.com/api/BimfaceSDKLoader/BimfaceSDKLoader@latest-release.js" charset="utf-8"></script>
 <script type="module">
-    import { createApp, ref } from './vue.esm-browser.js'
+    import { createApp, ref, onMounted } from './vue.esm-browser.js'
 
     const App = {
         template: `
           <div>
               <div>count:{{ count }}</div>
               <button @click="add">点击</button>
+              <div id="domId" style="width:800px; height:600px"></div>
           </div>`,
         setup() {
             const count=ref(0);
             const add = ()=>{
                 count.value=count.value+1
             }
+            
+            onMounted(() => {
+                // Code for BIM
+                let viewer3D
+                let bimapp
+                let viewToken = '70ae92494b8c48f9ad4ef98890a99bc5'
+                let loaderConfig = new BimfaceSDKLoaderConfig()
+                loaderConfig.viewtoken = viewToken
+                BimfaceSDKLoader.load(loaderConfig, successCallback, failureCallback)
+            })
+
+            // callback function when success
+            function successCallback(viewMetaData) {
+                // get DOM
+                let domshow = document.getElementById('domId')
+                // make 
+                let webAppConfig = new Glodon.Bimface.Application.WebApplication3DConfig()
+                webAppConfig.domElement = domshow
+                bimapp = new Glodon.Bimface.Application.WebApplication3D(webAppConfig)
+                bimapp.addView(viewToken)
+                viewer3D = app.getViwer()
+
+                alert("Beauty happens");
+            }
+
+            function failureCallback(error) {
+                console.log(error);
+                alert("Shit happens");
+            }
+
             return{
                 count,
                 add

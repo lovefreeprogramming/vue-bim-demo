@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>My first BIMFACE app</title>
+    </head>
+<body>
+    <div id="domId" style="width:800px; height:600px"></div>
+    <button class="button" id="btnIsolation" onclick="isolateComponents()">构件隔离</button>
+
+
+
+
+    <script src="./BimfaceSDKLoader.js" charset="utf-8"></script>
+    <script>
+        let viewer3D;
+        let app;
+        let viewToken = 'c943c4b5604d4eb3a83d2159e8cbe9b9';
+        let loaderConfig = new BimfaceSDKLoaderConfig();
+            loaderConfig.viewToken = viewToken;
+            BimfaceSDKLoader.load(loaderConfig, successCallback, failureCallback);
+
+            function successCallback(viewMetaData) {
+                let domShow = document.getElementById('domId');
+                let webAppConfig = new Glodon.Bimface.Application.WebApplication3DConfig();
+                    webAppConfig.domElement = domShow;    
+                app = new Glodon.Bimface.Application.WebApplication3D(webAppConfig);    
+                app.addView(viewToken);
+                viewer3D = app.getViewer();
+            };
+            
+            function failureCallback(error) {
+                console.log(error);
+            };
+
+            let isIsolationActivated = false;
+            function isolateComponents() {
+                if (!isIsolationActivated) {
+                    // 设置隔离选项，指定其他构件为半透明状态
+                    let makeOthersTranslucent = Glodon.Bimface.Viewer.IsolateOption.MakeOthersTranslucent;
+                    // 调用viewer3D.method，隔离楼层为"F2"的构件
+                    viewer3D.getModel().isolateComponentsByObjectData([{"levelName":"F2"}], makeOthersTranslucent);
+                    // 渲染三维模型
+                    viewer3D.render(); 
+                    // 修改按钮的文字内容
+                    setButtonText("btnIsolation", "取消隔离");
+                } else {
+                    // 清除隔离
+                    viewer3D.getModel().clearIsolation();
+                    // 渲染三维模型
+                    viewer3D.render();
+                    // 修改按钮的文字内容
+                    setButtonText("btnIsolation", "构件隔离");
+                }
+                isIsolationActivated = !isIsolationActivated;
+            }
+
+            function setButtonText(btnId, text) {
+                let dom = document.getElementById(btnId);
+                if (dom != null && dom.nodeName == "BUTTON") {
+                    dom.innerText = text;
+                }
+            }
+    </script>
+</body>
+</html>
